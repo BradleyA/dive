@@ -1,7 +1,7 @@
 package ui
 
 import (
-	"github.com/jroimartin/gocui"
+	"github.com/awesome-gocui/gocui"
 	"github.com/sirupsen/logrus"
 	"github.com/wagoodman/dive/dive/filetree"
 	"github.com/wagoodman/dive/dive/image"
@@ -15,8 +15,8 @@ type Controller struct {
 	views *view.Views
 }
 
-func NewCollection(g *gocui.Gui, analysis *image.AnalysisResult, cache filetree.Comparer) (*Controller, error) {
-	views, err := view.NewViews(g, analysis, cache)
+func NewCollection(g *gocui.Gui, imageName string, analysis *image.AnalysisResult, cache filetree.Comparer) (*Controller, error) {
+	views, err := view.NewViews(g, imageName, analysis, cache)
 	if err != nil {
 		return nil, err
 	}

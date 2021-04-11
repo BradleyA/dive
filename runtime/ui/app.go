@@ -1,13 +1,14 @@
 package ui
 
 import (
+	"sync"
+
 	"github.com/wagoodman/dive/dive/image"
 	"github.com/wagoodman/dive/runtime/ui/key"
 	"github.com/wagoodman/dive/runtime/ui/layout"
 	"github.com/wagoodman/dive/runtime/ui/layout/compound"
-	"sync"
 
-	"github.com/jroimartin/gocui"
+	"github.com/awesome-gocui/gocui"
 	"github.com/sirupsen/logrus"
 	"github.com/wagoodman/dive/dive/filetree"
 )
@@ -26,13 +27,13 @@ var (
 	appSingleton *app
 )
 
-func newApp(gui *gocui.Gui, analysis *image.AnalysisResult, cache filetree.Comparer) (*app, error) {
+func newApp(gui *gocui.Gui, imageName string, analysis *image.AnalysisResult, cache filetree.Comparer) (*app, error) {
 	var err error
 	once.Do(func() {
 		var controller *Controller
 		var globalHelpKeys []*key.Binding
 
-		controller, err = NewCollection(gui, analysis, cache)
+		controller, err = NewCollection(gui, imageName, analysis, cache)
 		if err != nil {
 			return
 		}
@@ -127,16 +128,16 @@ func (a *app) quit() error {
 }
 
 // Run is the UI entrypoint.
-func Run(analysis *image.AnalysisResult, treeStack filetree.Comparer) error {
+func Run(imageName string, analysis *image.AnalysisResult, treeStack filetree.Comparer) error {
 	var err error
 
-	g, err := gocui.NewGui(gocui.OutputNormal)
+	g, err := gocui.NewGui(gocui.OutputNormal, true)
 	if err != nil {
 		return err
 	}
 	defer g.Close()
 
-	_, err = newApp(g, analysis, treeStack)
+	_, err = newApp(g, imageName, analysis, treeStack)
 	if err != nil {
 		return err
 	}
